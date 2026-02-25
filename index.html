@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://unpkg.com/@cosmograph/cosmograph"></script>
+</head>
+
+<body style="margin:0; background:#f8fafc;">
+
+<div id="graph" style="width:100%; height:100vh;"></div>
+
+<script>
+fetch("graph.json")
+  .then(res => res.json())
+  .then(data => {
+
+    const graph = new Cosmograph(document.getElementById('graph'), {
+
+      nodes: data.nodes,
+      links: data.links,
+
+      nodeId: d => d.id,
+      linkSource: d => d.source,
+      linkTarget: d => d.target,
+
+      // 🎨 LIGHT THEME
+      backgroundColor: "#f8fafc",
+
+      // 🎨 MERGED VARIABLE COLOR
+      nodeColor: d => {
+        if (d.type === "System") return "#ef4444";         // red
+        if (d.type === "File") return "#10b981";           // green
+        if (d.type === "Equation") return "#3b82f6";       // blue
+        if (d.type === "Variable" || d.type === "GlobalVariable")
+            return "#facc15";                               // yellow (merged)
+        if (d.type === "Constant") return "#fb923c";       // orange
+        return "#94a3b8";
+      },
+
+      linkColor: "#d1d5db",
+      linkOpacity: 0.35,
+      nodeSize: 2,
+      linkWidth: 0.4,
+
+      simulationGravity: 0.3,
+      simulationRepulsion: 1.5
+    });
+
+  });
+</script>
+
+</body>
+</html>
