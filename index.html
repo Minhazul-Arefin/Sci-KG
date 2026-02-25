@@ -2,14 +2,16 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script src="https://unpkg.com/@cosmograph/cosmograph@1.6.0/dist/cosmograph.min.js"></script>
 </head>
 
 <body style="margin:0; background:#f8fafc;">
 
 <div id="graph" style="width:100%; height:100vh;"></div>
 
-<script>
+<script type="module">
+
+import { Cosmograph } from "https://cdn.jsdelivr.net/npm/@cosmograph/cosmograph@1.6.0/dist/cosmograph.esm.js";
+
 fetch("./graph.json")
   .then(res => res.json())
   .then(data => {
@@ -37,7 +39,6 @@ fetch("./graph.json")
 
       linkColor: "#d1d5db",
       linkOpacity: 0.25,
-
       nodeSize: 1.2,
       linkWidth: 0.3,
 
@@ -47,6 +48,7 @@ fetch("./graph.json")
 
   })
   .catch(err => console.error(err));
+
 </script>
 
 </body>
