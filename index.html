@@ -83,16 +83,25 @@ fetch("./graph.json")
 
     });
 
-    // ---- RENDER ----
-    const renderer = new sigma.Sigma(
-      graph,
-      document.getElementById("container"),
-      {
-        renderEdgeLabels: false,
-        labelDensity: 0.03,
-        defaultEdgeColor: "#d1d5db"
-      }
-    );
+   // ---- RENDER ----
+const renderer = new Sigma(
+  graph,
+  document.getElementById("container"),
+  {
+    renderEdgeLabels: false,
+    labelDensity: 0.03,
+    defaultEdgeColor: "#d1d5db"
+  }
+);
+
+const camera = renderer.getCamera();
+camera.setState({
+  x: 50,
+  y: 50,
+  ratio: 1.2
+});
+
+console.log("Graph rendered successfully.");
 
     // Center camera
     const camera = renderer.getCamera();
