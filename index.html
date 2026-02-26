@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <title>Sci-KG</title>
 
-  <!-- Local Graphology -->
-  <script src="./graphology.min.js"></script>
+  <!-- Load local Graphology -->
+  <script src="./graphology.umd.min.js"></script>
 
-  <!-- Local Sigma -->
+  <!-- Load local Sigma -->
   <script src="./sigma.min.js"></script>
 
   <style>
@@ -29,14 +29,14 @@
 
 <script>
 
-fetch("graph.json")
+fetch("./graph.json")
   .then(response => response.json())
   .then(data => {
 
     console.log("Nodes:", data.nodes.length);
     console.log("Edges:", data.links.length);
 
-    // MULTIGRAPH (important for your KG)
+    // MULTIGRAPH (important for duplicate edges)
     const graph = new graphology.Graph({ multi: true });
 
     // ---- ADD NODES ----
