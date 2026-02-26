@@ -30,53 +30,71 @@
 <script>
 
 fetch("graph.json")
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
 
-    const graph = new graphology.Graph();
+    // MULTI GRAPH (CRITICAL)
+    const graph = new graphology.Graph({ multi: true });
 
-    // --- Add Nodes ---
+    console.log("Nodes:", data.nodes.length);
+    console.log("Edges:", data.links.length);
+
+    // ---- ADD NODES ----
     data.nodes.forEach(node => {
 
       let color = "#94a3b8";
 
-      if (node.type === "System") color = "#ef4444";        // red
-      else if (node.type === "File") color = "#10b981";     // green
-      else if (node.type === "Equation") color = "#3b82f6"; // blue
+      if (node.type === "System") color = "#ef4444";
+      else if (node.type === "File") color = "#10b981";
+      else if (node.type === "Equation") color = "#3b82f6";
       else if (node.type === "Variable" || node.type === "GlobalVariable")
-        color = "#facc15";                                  // yellow
+        color = "#facc15";
       else if (node.type === "Constant")
-        color = "#fb923c";                                  // orange
+        color = "#fb923c";
 
-      graph.addNode(node.id, {
-        label: node.id,
-        size: 1.8,
-        color: color,
-        x: Math.random(),
-        y: Math.random()
-      });
-
-    });
-
-    // --- Add Edges ---
-    data.links.forEach(link => {
-
-      if (graph.hasNode(link.source) && graph.hasNode(link.target)) {
-        graph.addEdge(link.source, link.target, {
-          size: 0.2,
-          color: "#d1d5db"
+      if (!graph.hasNode(node.id)) {
+        graph.addNode(node.id, {
+          label: node.id,
+          size: 1.5,
+          color: color,
+          x: Math.random(),
+          y: Math.random()
         });
       }
 
     });
 
-    // --- Initialize Sigma ---
-    new sigma.Sigma(graph, document.getElementById("container"), {
-      renderEdgeLabels: false,
-      labelDensity: 0.05,
-      labelGridCellSize: 100,
-      defaultNodeType: "circle"
+    // ---- ADD EDGES (WITH UNIQUE KEY) ----
+    data.links.forEach((link, index) => {
+
+      if (graph.hasNode(link.source) && graph.hasNode(link.target)) {
+
+        graph.addEdgeWithKey(
+          "e_" + index,   // UNIQUE KEY
+          link.source,
+          link.target,
+          {
+            size: 0.2,
+            color: "#d1d5db"
+          }
+        );
+
+      }
+
     });
+
+    // ---- RENDER ----
+    const renderer = new sigma.Sigma(
+      graph,
+      document.getElementById("container"),
+      {
+        renderEdgeLabels: false,
+        labelDensity: 0.04,
+        defaultEdgeColor: "#d1d5db"
+      }
+    );
+
+    console.log("Graph rendered.");
 
   })
   .catch(error => {
