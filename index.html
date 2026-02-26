@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <title>Sci-KG</title>
 
-  <!-- Graphology -->
-  <script src="https://unpkg.com/graphology@0.25.1/dist/graphology.umd.min.js"></script>
+  <!-- Local Graphology -->
+  <script src="./graphology.min.js"></script>
 
-  <!-- Sigma v2 -->
-  <script src="https://unpkg.com/sigma@2.4.0/build/sigma.min.js"></script>
+  <!-- Local Sigma -->
+  <script src="./sigma.min.js"></script>
 
   <style>
     body {
@@ -33,11 +33,11 @@ fetch("graph.json")
   .then(response => response.json())
   .then(data => {
 
-    // MULTI GRAPH (CRITICAL)
-    const graph = new graphology.Graph({ multi: true });
-
     console.log("Nodes:", data.nodes.length);
     console.log("Edges:", data.links.length);
+
+    // MULTIGRAPH (important for your KG)
+    const graph = new graphology.Graph({ multi: true });
 
     // ---- ADD NODES ----
     data.nodes.forEach(node => {
@@ -55,26 +55,26 @@ fetch("graph.json")
       if (!graph.hasNode(node.id)) {
         graph.addNode(node.id, {
           label: node.id,
-          size: 1.5,
+          size: 1.4,
           color: color,
-          x: Math.random(),
-          y: Math.random()
+          x: Math.random() * 100,
+          y: Math.random() * 100
         });
       }
 
     });
 
-    // ---- ADD EDGES (WITH UNIQUE KEY) ----
+    // ---- ADD EDGES ----
     data.links.forEach((link, index) => {
 
       if (graph.hasNode(link.source) && graph.hasNode(link.target)) {
 
         graph.addEdgeWithKey(
-          "e_" + index,   // UNIQUE KEY
+          "e_" + index,
           link.source,
           link.target,
           {
-            size: 0.2,
+            size: 0.15,
             color: "#d1d5db"
           }
         );
@@ -89,12 +89,20 @@ fetch("graph.json")
       document.getElementById("container"),
       {
         renderEdgeLabels: false,
-        labelDensity: 0.04,
+        labelDensity: 0.03,
         defaultEdgeColor: "#d1d5db"
       }
     );
 
-    console.log("Graph rendered.");
+    // Center camera
+    const camera = renderer.getCamera();
+    camera.setState({
+      x: 50,
+      y: 50,
+      ratio: 1.2
+    });
+
+    console.log("Graph rendered successfully.");
 
   })
   .catch(error => {
